@@ -2,7 +2,6 @@ import random
 import numpy as np
 from joblib.numpy_pickle_utils import xrange
 
-
 def newpop(nInd, cromLin):
     populacao = np.random.choice(nInd*cromLin, size=(nInd,cromLin), replace=False)
     return populacao
@@ -28,12 +27,25 @@ def code(pop):
             aux = np.binary_repr(pop[i][j])
             pop[i,j] = aux
 
-def decode(pop):
-    for i in range(0, pop.shape[0]):
-        for j in range(0, pop.shape[1]):
-            valor = str(pop[i][j])
+def decode(pop, tipo):
+    #tipo 1 = matriz
+    #tipo 2 = array
+
+    if tipo == 1:
+        for i in range(0, pop.shape[0]):
+            for j in range(0, pop.shape[1]):
+                valor = str(pop[i][j])
+                aux = int(valor,2)
+                pop[i][j] = aux
+    else:
+        for i in range(len(pop)):
+            print(pop[i])
+            valor = str(pop[i])
             aux = int(valor,2)
-            pop[i][j] = aux
+            pop[i] = aux
+            print(pop[i])
+
+    return pop
 
 def funcao_fitness(pop):
     fitness_valores = {}
@@ -42,6 +54,7 @@ def funcao_fitness(pop):
         fitness_valores[i] = fitness
 
     return fitness_valores
+
 def funcao_objetivo(ind):
     dic_notas = montar_notas(ind)
     notas_aluno = []
@@ -67,7 +80,6 @@ def descobrir_probabilidade_fitness(fitness_valores):
     probabilidades = []
     for i in range(len(fitness_relativo)):
         probabilidades.append(sum(fitness_relativo[:i+1]))
-
     return probabilidades
 
 def metodo_roleta(populacao, probabilidade, numero):
@@ -80,15 +92,47 @@ def metodo_roleta(populacao, probabilidade, numero):
                 break
     return escolhidos
 
+def cruzamento(pais):
+    pai = pais[0]
+    mae = pais[1]
+
+    lInd = int(len(pais[0]))
+    cp = np.random.randint(lInd-1)+1
+
+    aleatorio = np.random.randint(2)
+    if aleatorio == 0:
+        filho = pai[0:cp] + mae[cp:lInd]
+    else:
+        filho = mae[0:cp] + pai[cp:lInd]
+
+    return filho
+
+def mutacao(filhos,taxa_mutacao):
+    for i in range(len(filhos)):
+        if random.random() < taxa_mutacao:
+            novo_individuo = list(str(filhos[i]))
+            pos = random.randint(0, len(novo_individuo)-1)
+            if(novo_individuo[pos] == "0"):
+                novo_individuo[pos] = "1"
+            else:
+                novo_individuo[pos] = "0"
+
+            filhos[i] = "".join(novo_individuo)
+    return filhos
+
 #teste
 populacao = newpop(10,10)
 #print(populacao)
-#valor = funcao_fitness(populacao)
-#teste = descobrir_probabilidade_fitness(valor)
-#print(metodo_roleta(populacao,teste, 2))
+code(populacao)
+#print("\ncode ->\n %s" %populacao)
+fitness = funcao_fitness(populacao)
+best_fit = descobrir_probabilidade_fitness(fitness)
+pais = metodo_roleta(populacao, best_fit, 2)
+filhos = cruzamento(pais)
+filhos = mutacao(filhos, 0.05)
+
 #print(dic)
 #print("\npreenchido ->\n %s" %populacao)
-#code(populacao)
-#print("\ncode ->\n %s" %populacao)
 #decode(populacao)
 #print("\ndecode ->\n %s" %populacao)
+
