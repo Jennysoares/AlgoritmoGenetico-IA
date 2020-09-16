@@ -26,6 +26,7 @@ def code(pop):
         for j in range(0, pop.shape[1]):
             aux = np.binary_repr(pop[i][j])
             pop[i,j] = aux
+    return pop
 
 def decode(pop, tipo):
     #tipo 1 = matriz
@@ -39,11 +40,9 @@ def decode(pop, tipo):
                 pop[i][j] = aux
     else:
         for i in range(len(pop)):
-            print(pop[i])
             valor = str(pop[i])
             aux = int(valor,2)
             pop[i] = aux
-            print(pop[i])
 
     return pop
 
@@ -107,32 +106,54 @@ def cruzamento(pais):
 
     return filho
 
-def mutacao(filhos,taxa_mutacao):
+def mutacao(filhos,taxa_mutacao, dominio):
+    flag = 0
     for i in range(len(filhos)):
         if random.random() < taxa_mutacao:
             novo_individuo = list(str(filhos[i]))
-            pos = random.randint(0, len(novo_individuo)-1)
-            if(novo_individuo[pos] == "0"):
-                novo_individuo[pos] = "1"
-            else:
-                novo_individuo[pos] = "0"
 
-            filhos[i] = "".join(novo_individuo)
+            while flag == 0:
+                pos = random.randint(0, len(novo_individuo)-1)
+                if(novo_individuo[pos] == "0"):
+                    novo_individuo[pos] = "1"
+                else:
+                    novo_individuo[pos] = "0"
+
+                novo = "".join(novo_individuo)
+                decode = int(str(novo), 2)
+                if decode > dominio:
+                    flag = 0
+                else:
+                    flag = 1
+
+            filhos[i] = novo
     return filhos
 
 #teste
-populacao = newpop(10,10)
-#print(populacao)
+nInd = 10
+cromLin = 5
+populacao = newpop(nInd,cromLin)
+print("\nPopulação ->\n %s" %populacao)
 code(populacao)
-#print("\ncode ->\n %s" %populacao)
+print("\nPopulação Codificada ->\n %s" %populacao)
 fitness = funcao_fitness(populacao)
+print("\nFitness -> %s" %fitness)
 best_fit = descobrir_probabilidade_fitness(fitness)
+print("\nProbabilidade Fitness -> %s" %best_fit)
 pais = metodo_roleta(populacao, best_fit, 2)
+print("\nPais -> %s" %pais)
 filhos = cruzamento(pais)
-filhos = mutacao(filhos, 0.05)
+print("\nFilhos Cruzamento -> %s" %filhos)
+filhos = mutacao(filhos, 0.05, nInd*cromLin)
+print("\nFilhos Mutação -> %s" %filhos)
+#decode(filhos, 2)
 
-#print(dic)
-#print("\npreenchido ->\n %s" %populacao)
-#decode(populacao)
-#print("\ndecode ->\n %s" %populacao)
+
+decode(populacao, 1)
+#print("\nPopulação Decodificada ->\n %s" %populacao)
+
+
+
+
+
 
