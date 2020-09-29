@@ -117,12 +117,17 @@ def mutacao(filho, taxa_mutacao, dominio):
             individuo = list(str(aluno.id))
 
             while flag == 0:
+                valorRepetido = 0
                 mutado = trocar_valor(individuo)
                 mutado_decimal = int(str(mutado), 2)
 
                 if mutado_decimal > dominio or mutado_decimal in alunos_id:
                     flag = 0
                 else:
+                    for valor in alunos_id:
+                        if mutado_decimal == valor:
+                            valorRepetido = 1
+
                     flag = 1
             aluno.id = mutado
 
@@ -168,6 +173,8 @@ def main():
         print("---- Turma ----")
         for aluno in turma:
             print('%s' %aluno.id)
+            print('%s' %int(str(aluno.id),2))
+
 
 main()
 pop = newpop(10, 10)
