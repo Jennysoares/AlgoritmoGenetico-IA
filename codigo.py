@@ -4,7 +4,7 @@ import numpy as np
 import aluno as a
 
 nInd = 10
-cromLin = 10
+cromLin = 30
 
 def newpop(linhas, colunas):
     id_aluno = 0
@@ -50,7 +50,7 @@ def decode(populacao):
 def funcao_fitness(pop):
     fitness_valores = {}
 
-    for i in range(0, nInd):
+    for i in range(0, len(pop)):
         fitness = funcao_objetivo(pop[i])
         fitness_valores[i] = fitness
 
@@ -140,23 +140,23 @@ def trocar_valor(valor):
     return novo
 
 def maior_fitness(fitness):
-    maior = max(fitness.values())
-    return maior
+    maior = 0
+    turma = -1
+    for key in fitness:
+        if fitness[key] > maior:
+            turma = key
+
+    return turma
 
 def main():
     populacao_inicial = newpop(nInd, cromLin)
-    code(populacao_inicial)
-    nova_populacao = []
+    geracao_atual = code(populacao_inicial)
 
-    for i in range(0, 2):
-        if len(nova_populacao) == 0:
-            geracao_atual = populacao_inicial
-        else:
-            geracao_atual = nova_populacao
+    for i in range(0, 50):
+
         fitness = funcao_fitness(geracao_atual)
 
         nova_populacao = []
-
         for k in range(0, nInd):
             prob = descobrir_probabilidade_fitness(fitness)
             pais = metodo_roleta(geracao_atual, prob, 2)
@@ -164,11 +164,25 @@ def main():
             filho_mutado = mutacao(filho_gerado, 0.1, nInd * cromLin)
             nova_populacao.append(filho_mutado)
 
-    nova_populacao = np.asarray(nova_populacao)
-    for turma in nova_populacao:
-        print("---- Turma ----")
+        geracao_atual = nova_populacao
+
+    fitness = funcao_fitness(geracao_atual)
+    print("\n-=-=-=--=-=-=--=-=-=- MELHOR TURMA -=-=-=--=-=-=--=-=-=-\n")
+    for alunos in geracao_atual[maior_fitness(fitness)]:
+        print('Aluno {aluno}  => Nota {nota}'.format(aluno = int(str(alunos.id), 2), nota = alunos.notas))
+
+    print("\n\n-=-=-=--=-=-=--=-=-=- TODAS AS TURMAS -=-=-=--=-=-=--=-=-=-\n")
+
+    cont = 0
+    for turma in geracao_atual:
+        cont += 1
+        print('Turma {}  =>  '.format(cont), end='')
         for aluno in turma:
-            print('%s' %int(str(aluno.id),2))
+            print(f' {int(str(aluno.id),2) :^3}', end='')
+        print()
+
+
+
 
 
 main()
