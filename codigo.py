@@ -110,9 +110,9 @@ def cruzamento(pais):
 def mutacao(filho, taxa_mutacao, dominio):
     flag = 0
     alunos_id = []
-    for aluno in filho: alunos_id.append(int(str(aluno.id),2))
 
     for aluno in filho:
+        for aluno in filho: alunos_id.append(int(str(aluno.id), 2))
         if random.random() < taxa_mutacao:
             individuo = list(str(aluno.id))
 
@@ -121,13 +121,9 @@ def mutacao(filho, taxa_mutacao, dominio):
                 mutado = trocar_valor(individuo)
                 mutado_decimal = int(str(mutado), 2)
 
-                if mutado_decimal > dominio or mutado_decimal in alunos_id:
+                if (mutado_decimal > dominio) or (mutado_decimal in alunos_id):
                     flag = 0
                 else:
-                    for valor in alunos_id:
-                        if mutado_decimal == valor:
-                            valorRepetido = 1
-
                     flag = 1
             aluno.id = mutado
 
@@ -172,16 +168,8 @@ def main():
     for turma in nova_populacao:
         print("---- Turma ----")
         for aluno in turma:
-            print('%s' %aluno.id)
             print('%s' %int(str(aluno.id),2))
 
 
 main()
-pop = newpop(10, 10)
-code(pop)
-fitness = funcao_fitness(pop)
-probabilade = descobrir_probabilidade_fitness(fitness)
-pais = metodo_roleta(pop, probabilade, 2)
-filho = cruzamento(pais)
-mutacao(filho,0.1, nInd*cromLin)
 
