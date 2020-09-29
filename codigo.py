@@ -6,7 +6,6 @@ import aluno as a
 nInd = 10
 cromLin = 30
 
-
 def newpop(linhas, colunas):
     id_aluno = 0
     populacao = []
@@ -22,7 +21,6 @@ def newpop(linhas, colunas):
 
     return populacao
 
-
 def montar_notas():
     nota = []
 
@@ -33,22 +31,21 @@ def montar_notas():
 
     return nota
 
-
 def code(populacao):
+
     for turmas in populacao:
         for alunos in turmas:
             alunos.id = np.binary_repr(int(alunos.id))
 
     return populacao
 
-
 def decode(populacao):
+
     for turmas in populacao:
         for alunos in turmas:
             aux = int(str(alunos.id), 2)
             alunos.id = aux
     return populacao
-
 
 def funcao_fitness(pop):
     fitness_valores = {}
@@ -58,7 +55,6 @@ def funcao_fitness(pop):
         fitness_valores[i] = fitness
 
     return fitness_valores
-
 
 def funcao_objetivo(turma):
     notas_aluno = []
@@ -74,7 +70,6 @@ def funcao_objetivo(turma):
     dp = round(float(np.std(media_alunos)), 3)
     return dp
 
-
 def descobrir_probabilidade_fitness(fitness_valores):
     fitness = fitness_valores.values()
     total_fit = float(sum(fitness))
@@ -87,7 +82,6 @@ def descobrir_probabilidade_fitness(fitness_valores):
         probabilidades.append(sum(fitness_relativo[:i + 1]))
     return probabilidades
 
-
 def metodo_roleta(populacao, probabilidade, numero):
     escolhidos = []
     for n in xrange(numero):
@@ -98,36 +92,32 @@ def metodo_roleta(populacao, probabilidade, numero):
                 break
     return escolhidos
 
-
 def cruzamento(pais):
     pai = pais[0]
     mae = pais[1]
 
-    lind = int(len(pais[0]))
-    cp = np.random.randint(lind - 1) + 1
+    lInd = int(len(pais[0]))
+    cp = np.random.randint(lInd - 1) + 1
 
     aleatorio = np.random.randint(2)
     if aleatorio == 0:
-        filho = pai[0:cp] + mae[cp:lind]
+        filho = pai[0:cp] + mae[cp:lInd]
     else:
-        filho = mae[0:cp] + pai[cp:lind]
+        filho = mae[0:cp] + pai[cp:lInd]
 
     return filho
-
 
 def mutacao(filho, taxa_mutacao, dominio):
     flag = 0
     alunos_id = []
-    mutado = ''
 
     for aluno in filho:
-        for al in filho:
-            alunos_id.append(int(str(al.id), 2))
-
+        for aluno in filho: alunos_id.append(int(str(aluno.id), 2))
         if random.random() < taxa_mutacao:
             individuo = list(str(aluno.id))
 
             while flag == 0:
+                valorRepetido = 0
                 mutado = trocar_valor(individuo)
                 mutado_decimal = int(str(mutado), 2)
 
@@ -139,17 +129,15 @@ def mutacao(filho, taxa_mutacao, dominio):
 
     return filho
 
-
 def trocar_valor(valor):
     pos = random.randint(0, len(valor) - 1)
-    if valor[pos] == '0':
+    if (valor[pos] == '0'):
         valor[pos] = '1'
     else:
         valor[pos] = '0'
 
     novo = "".join(valor)
     return novo
-
 
 def maior_fitness(fitness):
     maior = 0
@@ -159,7 +147,6 @@ def maior_fitness(fitness):
             turma = key
 
     return turma
-
 
 def main():
     populacao_inicial = newpop(nInd, cromLin)
@@ -182,7 +169,7 @@ def main():
     fitness = funcao_fitness(geracao_atual)
     print("\n-=-=-=--=-=-=--=-=-=- MELHOR TURMA -=-=-=--=-=-=--=-=-=-\n")
     for alunos in geracao_atual[maior_fitness(fitness)]:
-        print('Aluno {aluno}  => Nota {nota}'.format(aluno=int(str(alunos.id), 2), nota=alunos.notas))
+        print('Aluno {aluno}  => Nota {nota}'.format(aluno = int(str(alunos.id), 2), nota = alunos.notas))
 
     print("\n\n-=-=-=--=-=-=--=-=-=- TODAS AS TURMAS -=-=-=--=-=-=--=-=-=-\n")
 
@@ -191,8 +178,12 @@ def main():
         cont += 1
         print('Turma {}  =>  '.format(cont), end='')
         for aluno in turma:
-            print(f' {int(str(aluno.id), 2) :^3}', end='')
+            print(f' {int(str(aluno.id),2) :^3}', end='')
         print()
 
 
+
+
+
 main()
+
