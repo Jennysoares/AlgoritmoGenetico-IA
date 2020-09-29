@@ -140,10 +140,10 @@ def trocar_valor(valor):
     return novo
 
 def maior_fitness(fitness):
-    maior = 0
+    maior = max(fitness.values())
     turma = -1
     for key in fitness:
-        if fitness[key] > maior:
+        if fitness[key] == maior:
             turma = key
 
     return turma
@@ -151,6 +151,7 @@ def maior_fitness(fitness):
 def main():
     populacao_inicial = newpop(nInd, cromLin)
     geracao_atual = code(populacao_inicial)
+    fitness = funcao_fitness(populacao_inicial)
 
     for i in range(0, 50):
 
